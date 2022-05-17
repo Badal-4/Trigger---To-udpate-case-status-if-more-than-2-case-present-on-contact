@@ -1,0 +1,31 @@
+public class trgController
+{
+     public static void updateCase(List<Case> caseList)
+     {
+           Set<Id> conId = new Set<Id>();
+    for(Case c : caseList)
+    {
+        if(c.ContactId != null)
+        {
+            conId.add(c.ContactId);
+        }
+    }
+   List<Case> casesTodayFromContact = [SELECT Id
+							 			   FROM Case
+										  WHERE ContactId   = : conId
+										    AND CreatedDate = TODAY];
+    for(Case ca : caseList)
+    {
+        if (casesTodayFromContact.size() >= 2) {
+		   		ca.Status = 'Escalated';
+               
+		   	}
+    }
+     }
+}
+
+
+  if(trigger.isBefore && trigger.isInsert)
+    {
+        trgController.updateCase(trigger.new);
+    }
